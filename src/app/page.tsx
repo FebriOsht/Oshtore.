@@ -262,7 +262,7 @@ export default function LandingPage() {
                   ))}
                 </div>
                 
-                <a href="/landing-page-service" className="block w-full mt-auto">
+                <a href="/landing-page" className="block w-full mt-auto">
                   <Button variant="outline" className="w-full !rounded-xl md:!rounded-2xl border-indigo-500/30 text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all !py-3.5 md:!py-5 flex items-center justify-center gap-2 text-sm md:text-base">
                     Eksplor Jasa Landing Page <ChevronRight size={16} className="md:w-[18px] md:h-[18px]" />
                   </Button>
@@ -297,7 +297,7 @@ export default function LandingPage() {
                   ))}
                 </div>
                 
-                <a href="/system" className="block w-full mt-auto">
+                <a href="/business-system" className="block w-full mt-auto">
                   <Button className="w-full !rounded-xl md:!rounded-2xl shadow-[0_0_20px_rgba(168,85,247,0.2)] bg-purple-600 hover:bg-purple-500 !py-3.5 md:!py-5 flex items-center justify-center gap-2 text-sm md:text-base text-white transition-colors">
                     Eksplor Solusi Sistem <ChevronRight size={16} className="md:w-[18px] md:h-[18px]" />
                   </Button>
