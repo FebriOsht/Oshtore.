@@ -15,8 +15,16 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: 'Oshtore | Jasa Landing Page & Sistem Bisnis Profesional',
   description: 'Tingkatkan konversi penjualan dan efisiensi operasional bisnis Anda dengan solusi digital dari Oshtore.',
+  // Definisi ikon yang lebih lengkap agar menimpa default browser/Vercel
   icons: {
-    icon: '/img/oshtore.png', 
+    icon: [
+      { url: '/img/oshtore.png', href: '/img/oshtore.png' },
+      { url: '/img/oshtore.png', href: '/img/oshtore.png', sizes: '34x34', type: 'image/png' },
+    ],
+    shortcut: '/img/oshtore.png',
+    apple: [
+      { url: '/img/oshtore.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 };
 
