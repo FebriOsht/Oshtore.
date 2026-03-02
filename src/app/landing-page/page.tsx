@@ -310,7 +310,7 @@ export default function LandingPageCatalog() {
               Kami melayani pembuatan Sistem Kasir (POS), Manajemen Inventori, dan Dashboard Owner khusus untuk mempercepat operasional bisnis Anda.
             </p>
             <a 
-              href="/system" 
+              href="/business-system" 
               className="animate-button-pulse inline-flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 bg-indigo-600 text-white rounded-2xl sm:rounded-full font-black text-sm sm:text-lg hover:bg-indigo-500 transition-all active:scale-95 group border border-indigo-500/50"
             >
               Lihat Katalog Sistem 

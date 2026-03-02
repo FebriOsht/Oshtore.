@@ -47,7 +47,7 @@ const SystemCard: React.FC<SystemCardProps> = ({ service }) => {
         {/* Tombol Aksi */}
         <div className="mt-auto">
           <a
-            href={`/system/${service.slug}`} // Asumsi ada routing detail
+            href={`/business-system/${service.slug}`} // Asumsi ada routing detail
             className="flex items-center justify-between w-full p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-slate-900 dark:text-white font-semibold group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300"
           >
             Pelajari Lebih Lanjut

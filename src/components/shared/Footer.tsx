@@ -43,8 +43,8 @@ const Footer = () => {
             </p>
             <div className="flex gap-3 md:gap-4 mt-2">
               {[
-                { icon: <Instagram size={16} className="md:w-[18px] md:h-[18px]" />, href: "#", label: "Instagram" },
-                { icon: <Github size={16} className="md:w-[18px] md:h-[18px]" />, href: "#", label: "Github" },
+                { icon: <Instagram size={16} className="md:w-[18px] md:h-[18px]" />, href: "https://www.instagram.com/03.febriansyah", label: "Instagram" },
+                { icon: <Github size={16} className="md:w-[18px] md:h-[18px]" />, href: "https://github.com/FebriOsht", label: "Github" },
                 { icon: <Globe size={16} className="md:w-[18px] md:h-[18px]" />, href: "http://fosht.vercel.app", label: "Portfolio" }
               ].map((social, i) => (
                 <a 
