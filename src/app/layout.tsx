@@ -1,8 +1,9 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
-import './globals.css'; // Pastikan Anda memiliki file CSS global untuk Tailwind
+import './globals.css'; 
 
 // Mengonfigurasi Font Plus Jakarta Sans untuk kesan premium
 const jakarta = Plus_Jakarta_Sans({ 
@@ -11,17 +12,18 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Oshtore | Jasa Landing Page & Sistem Bisnis Profesional',
   description: 'Tingkatkan konversi penjualan dan efisiensi operasional bisnis Anda dengan solusi digital dari Oshtore.',
   icons: {
-    icon: '/img/oshtore-logo1-removebg-.png',
+    icon: '/img/oshtore.png', 
   },
 };
 
 /**
  * ROOT LAYOUT
  * Wrapper utama yang menyatukan Navbar, Konten (children), dan Footer.
+ * Diatur untuk selalu menggunakan Dark Mode (#020617) secara default.
  */
 export default function RootLayout({
   children,
@@ -29,28 +31,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className="scroll-smooth">
-      {/* Diubah ke mode gelap (bg-[#020617] text-slate-100) agar senada dengan Navbar & Footer baru */}
-      <body className={`${jakarta.variable} font-sans bg-[#020617] text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-indigo-500/30`}>
-        
-        {/* Dekorasi Background (Latar Belakang Halus Mode Gelap) */}
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          {/* Ornamen Indigo di Kanan Atas */}
-          <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse"></div>
-          
-          {/* Ornamen Purple di Kiri Bawah */}
-          <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[120px]"></div>
-          
-          {/* Ornamen Blue Tambahan */}
-          <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[100px]"></div>
-        </div>
+    <html lang="id" className="scroll-smooth dark" style={{ colorScheme: 'dark' }}>
+      {/* Body dipaksa menggunakan warna background slate-950/custom gelap 
+        agar konsisten di semua halaman tanpa flicker
+      */}
+      <body className={`${jakarta.variable} font-sans bg-[#020617] text-slate-300 min-h-screen flex flex-col antialiased`}>
 
         {/* Komponen Navigasi Utama */}
         <Navbar />
         
         {/* Main Content: Tempat halaman (page.tsx) akan dirender */}
-        {/* Menggunakan pt-32 agar konten tidak tertutup oleh Navbar melayang yang baru */}
-        <main className="flex-grow pt-32 min-h-[60vh]">
+        <main className="flex-grow pt-20">
           {children}
         </main>
 
@@ -59,10 +50,10 @@ export default function RootLayout({
         
         {/* WhatsApp Floating Button (Opsional untuk konversi cepat) */}
         <a 
-          href="https://wa.me/6282371542230"
+          href="https://wa.me/62895366766999"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-8 right-8 z-40 p-4 bg-[#25D366] text-white rounded-2xl shadow-[0_0_20px_rgba(37,211,102,0.3)] hover:scale-110 hover:shadow-[0_0_25px_rgba(37,211,102,0.5)] transition-all active:scale-95 md:hidden"
+          className="fixed bottom-8 right-8 z-40 p-4 bg-[#25D366] text-white rounded-2xl shadow-2xl hover:scale-110 transition-transform active:scale-95 md:hidden"
           title="Chat WhatsApp"
         >
           <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
