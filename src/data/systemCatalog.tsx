@@ -8,57 +8,6 @@ import {
   Server 
 } from 'lucide-react';
 
-export const SYSTEM_CATALOG = [
-  {
-    title: "Sistem Kasir (POS) Custom",
-    description: "Sistem kasir yang disesuaikan dengan alur unik bisnis Anda. Bukan sekadar input data, tapi alat bantu ambil keputusan dengan fitur khusus.",
-    icon: <BarChart3 className="text-blue-400" size={32} />,
-    features: ["Laporan Penjualan Real-time", "Manajemen Multi-cabang", "Integrasi Pembayaran Digital", "Cetak Struk & Nota Digital", "Otoritas Akses Pegawai"],
-    price: "Mulai Rp 4.500.000",
-    bestFor: "Retail, F&B, Toko Modern"
-  },
-  {
-    title: "Manajemen Inventori & Gudang",
-    description: "Hentikan kerugian akibat stok mati atau kehilangan barang. Pantau setiap pergerakan barang, retur, dan supplier secara otomatis.",
-    icon: <Database className="text-indigo-400" size={32} />,
-    features: ["Peringatan Stok Rendah (Auto)", "Audit & Opname Digital", "Manajemen Supplier & PO", "History Keluar/Masuk Barang", "Barcode/QR Scanner Support"],
-    price: "Mulai Rp 5.000.000",
-    bestFor: "Gudang, Distributor, Pabrik"
-  },
-  {
-    title: "Web Scraping & Data Mining",
-    description: "Kumpulkan puluhan ribu data dari internet secara otomatis. Cocok untuk riset kompetitor, ekstraksi harga, atau database prospek.",
-    icon: <SearchCode className="text-emerald-400" size={32} />,
-    features: ["Ekstraksi Data Marketplace", "Scraping Direktori Bisnis", "Format Output (Excel/CSV/JSON)", "Bypass Anti-Bot Standar", "Scraping Terjadwal"],
-    price: "Mulai Rp 1.500.000",
-    bestFor: "Riset Pasar, Agen Properti"
-  },
-  {
-    title: "Bot Otomasi & Scripting",
-    description: "Gantikan pekerjaan manual yang berulang dengan Bot cerdas. Kirim pesan massal, input data otomatis, atau notifikasi sistem.",
-    icon: <Bot className="text-amber-400" size={32} />,
-    features: ["Bot Telegram / WhatsApp", "Auto Input Data (Web Automation)", "Notifikasi Real-time Server", "Integrasi API Pihak Ketiga", "Script Maintenance 1 Bulan"],
-    price: "Mulai Rp 2.000.000",
-    bestFor: "Customer Service, Admin"
-  },
-  {
-    title: "Dashboard ERP / Admin Monitoring",
-    description: "Pantau seluruh performa bisnis dari mana saja. Visualisasi data tingkat lanjut yang memudahkan Anda melihat tren dan kebocoran.",
-    icon: <Cpu className="text-purple-400" size={32} />,
-    features: ["Grafik Pertumbuhan Interaktif", "CRM (Manajemen Pelanggan)", "Manajemen Kinerja Pegawai (KPI)", "Ekspor Laporan Kompleks", "Akses Cloud Aman"],
-    price: "Mulai Rp 6.500.000",
-    bestFor: "Owner Bisnis, Manajer Level Atas"
-  },
-  {
-    title: "Custom Enterprise Web App",
-    description: "Punya alur kerja yang sangat spesifik dan belum ada software-nya di pasaran? Kami bangun sistem dari nol khusus untuk Anda.",
-    icon: <Server className="text-teal-400" size={32} />,
-    features: ["Arsitektur Skalabel (AWS/GCP)", "Keamanan Data Enkripsi Tinggi", "Full Source Code Kepemilikan", "Dukungan Teknis Prioritas", "UI/UX Tailor-made"],
-    price: "Custom Pricing",
-    bestFor: "Perusahaan Skala Besar"
-  }
-];
-
 export const TECH_STACK = [
   { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
   { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
@@ -66,4 +15,77 @@ export const TECH_STACK = [
   { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
   { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
   { name: "Tailwind CSS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" }
+];
+
+export const FILTERS = [
+  { label: "Semua", value: "all" },
+  { label: "Retail & F&B", value: "retail" },
+  { label: "Gudang & Pabrik", value: "gudang" },
+  { label: "Owner & Manajer", value: "manajemen" },
+  { label: "Riset & Data", value: "data" },
+  { label: "CS & Otomasi", value: "otomasi" },
+  { label: "Enterprise", value: "enterprise" },
+];
+
+export const SYSTEM_CATALOG = [
+  {
+    id: 1,
+    title: "Sistem Kasir (POS) Custom",
+    description: "Sistem kasir yang didesain khusus sesuai SOP bisnis Anda. Termasuk manajemen inventori dasar, laporan keuangan otomatis, dan sistem diskon kustom.",
+    icon: <BarChart3 className="text-blue-400" size={32} />,
+    features: ["Laporan Penjualan Real-time", "Manajemen Multi-cabang", "Integrasi Pembayaran Digital", "Cetak Struk & Nota Digital", "Otoritas Akses Pegawai"],
+    price: "Mulai Rp 7.500.000",
+    bestFor: "Retail, F&B, Toko Modern",
+    category: "retail"
+  },
+  {
+    id: 2,
+    title: "Manajemen Inventori & Gudang",
+    description: "Solusi otomatisasi untuk bisnis dengan pergerakan barang tinggi. Dilengkapi algoritma pengingat stok, manajemen supplier, dan audit digital.",
+    icon: <Database className="text-indigo-400" size={32} />,
+    features: ["Peringatan Stok Rendah (Auto)", "Audit & Opname Digital", "Manajemen Supplier & PO", "History Keluar/Masuk Barang", "Barcode/QR Scanner Support"],
+    price: "Mulai Rp 9.500.000",
+    bestFor: "Gudang, Distributor, Pabrik",
+    category: "gudang"
+  },
+  {
+    id: 3,
+    title: "Web Scraping & Data Mining",
+    description: "Ekstraksi data skala besar dari marketplace atau website kompetitor. Dibangun dengan sistem rotasi proxy untuk menghindari blokir.",
+    icon: <SearchCode className="text-emerald-400" size={32} />,
+    features: ["Ekstraksi Data Marketplace", "Scraping Direktori Bisnis", "Format Output (Excel/CSV/JSON)", "Bypass Anti-Bot Lanjutan", "Scraping Terjadwal"],
+    price: "Mulai Rp 3.500.000",
+    bestFor: "Riset Pasar, Agen Properti",
+    category: "data"
+  },
+  {
+    id: 4,
+    title: "Bot Otomasi & Scripting",
+    description: "Otomatisasi alur kerja digital seperti bot manajemen WhatsApp, bot Telegram interaktif, atau script RPA (Robotic Process Automation).",
+    icon: <Bot className="text-amber-400" size={32} />,
+    features: ["Bot Telegram / WhatsApp", "Auto Input Data (Web Automation)", "Notifikasi Real-time Server", "Integrasi API Pihak Ketiga", "Log Aktivitas Terpusat"],
+    price: "Mulai Rp 4.500.000",
+    bestFor: "Customer Service, Admin",
+    category: "otomasi"
+  },
+  {
+    id: 5,
+    title: "Dashboard ERP / Admin Monitoring",
+    description: "Sistem manajemen sumber daya perusahaan terintegrasi. Memantau keuangan, HRD, dan operasional dalam satu dashboard interaktif.",
+    icon: <Cpu className="text-purple-400" size={32} />,
+    features: ["Grafik Pertumbuhan Interaktif", "CRM (Manajemen Pelanggan)", "Manajemen Kinerja Pegawai (KPI)", "Ekspor Laporan Kompleks", "Akses Cloud Terenkripsi"],
+    price: "Mulai Rp 15.000.000",
+    bestFor: "Owner Bisnis, Manajer Level Atas",
+    category: "manajemen"
+  },
+  {
+    id: 6,
+    title: "Custom Enterprise Web App",
+    description: "Pembangunan aplikasi web skala besar dengan arsitektur mikroservis untuk kebutuhan bisnis yang sangat unik dan kompleks.",
+    icon: <Server className="text-teal-400" size={32} />,
+    features: ["Arsitektur Skalabel (AWS/GCP)", "Keamanan Data Enkripsi Tinggi", "Full Source Code Kepemilikan", "Dukungan Teknis Prioritas", "UI/UX Tailor-made"],
+    price: "Hubungi Kami",
+    bestFor: "Perusahaan Skala Besar",
+    category: "enterprise"
+  }
 ];

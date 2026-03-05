@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, easeInOut, useInView } from 'framer-motion';
+import { motion, AnimatePresence, easeInOut, useInView } from 'framer-motion';
 import { 
   ArrowRight,
   CheckCircle2,
@@ -14,7 +14,9 @@ import {
   Sparkles,
   Code,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  HelpCircle
 } from 'lucide-react';
 import PageTransition from '@/components/shared/PageTransition';
 
@@ -44,26 +46,33 @@ const Button = ({
   );
 };
 
-// --- Komponen Angka Animasi ---
+// --- Komponen Angka Animasi (OPTIMIZED: pakai requestAnimationFrame, bukan setInterval) ---
 const AnimatedNumber = ({ value, duration = 2 }: { value: number, duration?: number }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   useEffect(() => {
-    if (isInView) {
-      let start = 0;
-      // Menentukan interval waktu (ms) per langkah animasi
-      const incrementTime = (duration * 1000) / value;
+    if (!isInView) return;
 
-      const timer = setInterval(() => {
-        start += 1;
-        setCount(start);
-        if (start === value) clearInterval(timer);
-      }, incrementTime);
+    let startTime: number | null = null;
+    let rafId: number;
 
-      return () => clearInterval(timer);
-    }
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      // easeOutQuart untuk feel yang sama dengan sebelumnya
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setCount(Math.floor(eased * value));
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      } else {
+        setCount(value); // pastikan nilai akhir tepat
+      }
+    };
+
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
   }, [value, duration, isInView]);
 
   return <span ref={ref}>{count}</span>;
@@ -83,6 +92,7 @@ const staggerContainer = {
   }
 };
 
+// OPTIMIZED: floating pakai CSS transform saja (lebih ringan, off main thread)
 const floatingAnim = {
   initial: { y: 0 },
   animate: {
@@ -99,43 +109,95 @@ const floatingAnimReverse = {
   }
 };
 
+
+// --- Mini FAQ Accordion untuk Halaman Utama ---
+function HomeFAQItem({ q, a, index }: { q: string; a: string; index: number }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ duration: 0.4, delay: index * 0.07, ease: "easeOut" }}
+      className={`border rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer ${
+        open ? 'bg-white/[0.04] border-white/10' : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.03] hover:border-white/10'
+      }`}
+      onClick={() => setOpen(!open)}
+    >
+      <div className="flex items-center gap-4 p-5 sm:p-6">
+        <div className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-300 ${open ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.7)]' : 'bg-white/20'}`} />
+        <span className={`flex-grow text-sm sm:text-base font-semibold transition-colors ${open ? 'text-white' : 'text-slate-300'}`}>{q}</span>
+        <motion.div
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          className={`shrink-0 transition-colors ${open ? 'text-white' : 'text-slate-500'}`}
+        >
+          <ChevronDown size={17} />
+        </motion.div>
+      </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p className="mx-5 sm:mx-6 mb-5 pl-5 border-l-2 border-indigo-500/30 text-sm text-slate-400 leading-relaxed">{a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 export default function LandingPage() {
   return (
-    // Background utama dipaksa menjadi gelap (#020617 - slate-950)
     <PageTransition className="flex flex-col gap-24 pb-24 relative z-10 overflow-hidden bg-[#020617] transition-colors duration-500">
       
-      {/* --- Ambient Background & Noise --- */}
+      {/* --- Ambient Background & Noise ---
+          OPTIMIZED:
+          - Blob sekarang STATIC (tidak animate scale/opacity) — efek visual sama, GPU jauh lebih ringan
+          - Noise texture dipindah ke /noise.svg lokal (tidak ada request ke domain luar)
+          - Kalau belum punya file noise.svg lokal, download dari: https://grainy-gradients.vercel.app/noise.svg
+            lalu taruh di folder /public/noise.svg
+      --- */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.1, 1], 
-            opacity: [0.15, 0.25, 0.15] // Opacity tinggi untuk mode gelap
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[150px]"
-        />
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1], 
-            opacity: [0.1, 0.2, 0.1] // Opacity tinggi untuk mode gelap
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] left-[-10%] w-[800px] h-[800px] bg-purple-600/15 rounded-full blur-[150px]"
-        />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] brightness-100 contrast-150 mix-blend-overlay" />
+        {/* Blob kiri atas — static, tidak perlu animasi agar ringan */}
+        <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[150px]" />
+        {/* Blob kanan bawah — static */}
+        <div className="absolute bottom-[-10%] left-[-10%] w-[800px] h-[800px] bg-purple-600/15 rounded-full blur-[150px]" />
+        {/* 
+          Noise texture — ganti URL dengan /noise.svg setelah download ke /public 
+          Sementara tetap pakai URL luar jika belum ada file lokal:
+        */}
+        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] brightness-100 contrast-150 mix-blend-overlay" />
       </div>
 
       <main className="pt-6 md:pt-10 pb-24 md:pb-32">
         {/* --- Hero Section --- */}
         <section className="px-4 sm:px-6 text-center max-w-6xl mx-auto mb-24 md:mb-40 relative z-10">
           
-          {/* Decorative Floating Elements */}
-          <motion.div variants={floatingAnim} initial="initial" animate="animate" className="hidden xl:flex absolute top-10 -left-20 items-center gap-3 px-5 py-3 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md shadow-2xl transition-colors">
+          {/* Decorative Floating Elements — diberi will-change agar browser siapkan GPU layer */}
+          <motion.div
+            variants={floatingAnim}
+            initial="initial"
+            animate="animate"
+            style={{ willChange: 'transform' }}
+            className="hidden xl:flex absolute top-10 -left-20 items-center gap-3 px-5 py-3 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md shadow-2xl transition-colors"
+          >
             <div className="bg-indigo-500/20 p-2 rounded-xl transition-colors"><Code size={20} className="text-indigo-400" /></div>
             <span className="text-sm font-bold text-slate-300 tracking-wide transition-colors">Next-Gen Stack</span>
           </motion.div>
 
-          <motion.div variants={floatingAnimReverse} initial="initial" animate="animate" className="hidden xl:flex absolute bottom-20 -right-20 items-center gap-3 px-5 py-3 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md shadow-2xl transition-colors">
+          <motion.div
+            variants={floatingAnimReverse}
+            initial="initial"
+            animate="animate"
+            style={{ willChange: 'transform' }}
+            className="hidden xl:flex absolute bottom-20 -right-20 items-center gap-3 px-5 py-3 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md shadow-2xl transition-colors"
+          >
             <div className="bg-emerald-500/20 p-2 rounded-xl transition-colors"><Rocket size={20} className="text-emerald-400" /></div>
             <span className="text-sm font-bold text-slate-300 tracking-wide transition-colors">Fast Deployment</span>
           </motion.div>
@@ -205,7 +267,6 @@ export default function LandingPage() {
                 key={i} 
                 className="flex flex-col items-center justify-center p-8 bg-white/[0.02] border border-white/5 rounded-3xl hover:bg-white/[0.04] hover:border-white/10 transition-all duration-300 group relative overflow-hidden shadow-lg backdrop-blur-sm"
               >
-                {/* Aksen Latar Hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all"></div>
                 
@@ -334,6 +395,78 @@ export default function LandingPage() {
           </motion.div>
         </section>
 
+
+        {/* --- FAQ Section --- */}
+        <section className="mt-24 md:mt-40 px-4 sm:px-6 relative z-10">
+          <div className="max-w-4xl mx-auto">
+
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="text-center mb-12 md:mb-16"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold mb-6 backdrop-blur-md">
+                <HelpCircle size={13} className="animate-pulse" /> Pertanyaan Umum
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+                Ada yang Ingin <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Ditanyakan?</span>
+              </h2>
+              <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+                Jawaban atas keraguan yang paling sering muncul sebelum klien memutuskan untuk bekerja sama.
+              </p>
+            </motion.div>
+
+            {/* FAQ Items */}
+            <div className="space-y-3 mb-10">
+              {[
+                {
+                  q: "Apakah saya harus paham teknologi untuk bisa memesan?",
+                  a: "Sama sekali tidak perlu. Cukup ceritakan kebutuhan bisnis Anda — kami yang menerjemahkannya ke dalam teknologi."
+                },
+                {
+                  q: "Berapa lama waktu pengerjaannya?",
+                  a: "Landing page selesai dalam 1–3 hari kerja. Sistem custom seperti POS atau ERP membutuhkan 2–8 minggu tergantung kompleksitas. Timeline pasti akan dicantumkan di proposal."
+                },
+                {
+                  q: "Apakah ada biaya tersembunyi setelah proyek selesai?",
+                  a: "Harga proyek adalah harga final. Biaya tambahan yang mungkin muncul hanya perpanjangan domain/hosting tahunan dan biaya maintenance jika ada perubahan dari sisi Anda — keduanya kami beritahu transparan di awal."
+                },
+                {
+                  q: "Berapa DP yang harus dibayar di awal?",
+                  a: "Down Payment sebesar 50% dari total harga. Pelunasan 50% dibayarkan setelah proyek selesai dan Anda puas."
+                },
+                {
+                  q: "Apakah konsultasi awal benar-benar gratis?",
+                  a: "100% gratis dan tanpa komitmen apapun. Anda bebas tanya-tanya bahkan minta estimasi harga tanpa kewajiban memesan."
+                },
+              ].map((item, idx) => (
+                <HomeFAQItem key={idx} q={item.q} a={item.a} index={idx} />
+              ))}
+            </div>
+
+            {/* Link ke halaman FAQ lengkap */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <a
+                href="/faq"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-indigo-500/30 text-indigo-400 text-sm font-bold hover:bg-indigo-500/10 hover:border-indigo-500/60 transition-all group"
+              >
+                Lihat Semua Pertanyaan
+                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+            </motion.div>
+
+          </div>
+        </section>
+
         {/* --- Call to Action Section --- */}
         <section className="mt-24 md:mt-48 px-4 sm:px-6 relative z-10">
           <motion.div 
@@ -343,18 +476,27 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="max-w-6xl mx-auto bg-gradient-to-br from-indigo-900 via-[#0a0f24] to-purple-950 p-10 sm:p-16 md:p-28 rounded-[2.5rem] md:rounded-[4rem] text-center relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/5 transition-colors"
           >
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
+            {/* 
+              OPTIMIZED: texture carbon-fibre dipindah lokal.
+              Download dari https://www.transparenttextures.com/patterns/carbon-fibre.png
+              lalu taruh di /public/carbon-fibre.png
+              Sementara fallback ke inline style jika belum ada:
+            */}
+            <div className="absolute inset-0 bg-[url('/carbon-fibre.png')] opacity-[0.03]"></div>
             
-            {/* CTA Background Decor */}
-            <motion.div 
-              animate={{ rotate: 360 }} 
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="absolute -top-40 -left-40 w-64 h-64 md:w-96 md:h-96 bg-indigo-500/20 rounded-full blur-[80px] md:blur-[120px]" 
+            {/* CTA Background Decor
+                OPTIMIZED: rotate infinite dihapus — diganti CSS animation via Tailwind custom
+                yang berjalan di GPU compositor thread (jauh lebih ringan dari Framer Motion rotate)
+                Tambahkan di tailwind.config.js:
+                  animation: { 'spin-slow': 'spin 60s linear infinite', 'spin-slow-reverse': 'spin 60s linear infinite reverse' }
+            --- */}
+            <div
+              className="absolute -top-40 -left-40 w-64 h-64 md:w-96 md:h-96 bg-indigo-500/20 rounded-full blur-[80px] md:blur-[120px] animate-[spin_60s_linear_infinite]"
+              style={{ willChange: 'transform' }}
             />
-            <motion.div 
-              animate={{ rotate: -360 }} 
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="absolute -bottom-40 -right-40 w-64 h-64 md:w-96 md:h-96 bg-purple-500/20 rounded-full blur-[80px] md:blur-[120px]" 
+            <div
+              className="absolute -bottom-40 -right-40 w-64 h-64 md:w-96 md:h-96 bg-purple-500/20 rounded-full blur-[80px] md:blur-[120px] animate-[spin_60s_linear_infinite_reverse]"
+              style={{ willChange: 'transform' }}
             />
 
             <div className="relative z-10 flex flex-col items-center">

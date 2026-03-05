@@ -10,148 +10,46 @@ import {
   Smartphone, 
   Search, 
   Clock, 
-  ShieldCheck,
   Star,
   Layers,
   Code,
   ExternalLink
 } from 'lucide-react';
 import PageTransition from '@/components/shared/PageTransition';
+// REFACTORED: Data dipindah ke file terpisah
+import { LANDING_PAGE_PACKAGES } from '@/data/landingPageCatalog';
 
-/**
- * DATA KATALOG LANDING PAGE
- * (Dipindahkan ke sini agar pratinjau Canvas tidak error)
- * Di proyek lokal (VS Code), Anda dapat memindahkan ini kembali ke src/data/landingPageCatalog.ts
- */
-const LANDING_PAGE_PACKAGES = [
-  {
-    category: "Paket UMKM",
-    items: [
-      {
-        name: "UMKM Basic",
-        price: "Rp 950.000",
-        update: "Gratis Update 2 Bulan",
-        features: [
-          "Landing Page (1 Halaman)",
-          "UI/UX Modern & Clean",
-          "Domain .com/.net (1 Thn)",
-          "Optimasi SEO Dasar",
-          "Integrasi WhatsApp",
-          "Loading Super Cepat"
-        ],
-        color: "indigo"
-      },
-      {
-        name: "UMKM Special",
-        price: "Rp 1.450.000",
-        update: "Gratis Update 2 Bulan",
-        features: [
-          "Semua Fitur Paket Basic",
-          "Branding Warna Usaha",
-          "Logo / Foto / Video Asset",
-          "Galeri Produk & Pemesanan",
-          "Integrasi Media Sosial",
-          "Section Blog/Berita"
-        ],
-        color: "indigo",
-        popular: true
-      }
-    ]
-  },
-  {
-    category: "Paket Bisnis",
-    items: [
-      {
-        name: "Bisnis Basic",
-        price: "Rp 1.300.000",
-        update: "Gratis Update 3 Bulan",
-        features: [
-          "Landing Page Profesional",
-          "UI/UX Eksklusif",
-          "Domain Premium (1 Thn)",
-          "Google Analytics Integration",
-          "Lokasi Google Maps",
-          "Optimasi SEO Lanjutan"
-        ],
-        color: "blue"
-      },
-      {
-        name: "Bisnis Special",
-        price: "Rp 1.900.000",
-        update: "Gratis Update 3 Bulan",
-        features: [
-          "Semua Fitur Paket Bisnis Basic",
-          "Custom Branding & Logo",
-          "Copywriting Persuasif",
-          "Advanced Contact Form",
-          "Integrasi Marketing Tools",
-          "Prioritas Pengerjaan"
-        ],
-        color: "blue",
-        popular: false
-      }
-    ]
-  }
-];
-
-/**
- * HALAMAN UTAMA (KATALOG LANDING PAGE)
- * Menampilkan pilihan paket pembuatan landing page dengan animasi premium.
- */
 export default function LandingPageCatalog() {
   return (
-    // Background dipaksa ke mode gelap (#020617)
     <PageTransition className="flex flex-col gap-24 pb-24 relative z-10 overflow-hidden bg-[#020617]">
       
-      {/* Injeksi Custom Keyframes Animations */}
+      {/* CSS Animations
+          OPTIMIZED:
+          - Hapus glowPulse (animate-glow) dari blob besar — itu yang paling berat di halaman ini
+          - Tambah will-change: transform ke animate-float dan animate-float-slow
+          - animate-button-pulse tetap ada (elemen kecil, oke)
+      */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-50px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(50px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes revealScale {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-        }
-        @keyframes floatSlow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        @keyframes glowPulse {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.1); }
-        }
-        @keyframes buttonPulse {
-          0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
-          70% { box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes revealScale { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes floatSlow { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+        @keyframes buttonPulse { 0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); } 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); } }
         
         .animate-fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .animate-slide-in-left { animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .animate-slide-in-right { animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .animate-reveal-scale { animation: revealScale 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        
-        .animate-float { animation: float 4s ease-in-out infinite; }
-        .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
-        .animate-glow { animation: glowPulse 4s ease-in-out infinite; }
+        .animate-float { animation: float 4s ease-in-out infinite; will-change: transform; }
+        .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; will-change: transform; }
         .animate-button-pulse { animation: buttonPulse 2s infinite; }
       `}} />
 
       {/* 1. HERO SECTION */}
       <section className="px-4 sm:px-6 pt-4 md:pt-8 text-center max-w-5xl mx-auto relative">
+        {/* Floating decorative icons — will-change sudah di CSS class */}
         <div className="absolute top-10 left-10 text-indigo-500/20 animate-float-slow hidden md:block">
           <Code size={64} />
         </div>
@@ -164,11 +62,10 @@ export default function LandingPageCatalog() {
         </div>
         
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-tight mb-6 tracking-tighter overflow-hidden">
-          <div className="animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-            Landing Page yang 
-          </div>
+          <div className="animate-slide-in-left" style={{ animationDelay: '0.2s' }}>Landing Page yang</div>
           <div className="animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 animate-pulse">
+            {/* OPTIMIZED: Hapus animate-pulse dari gradient text — tidak perlu, overhead kecil tapi tidak ada nilai visual */}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500">
               Menjual
             </span> untuk Bisnis Anda
           </div>
@@ -184,7 +81,6 @@ export default function LandingPageCatalog() {
             <span className="sm:hidden">Paket Harga</span>
             <ArrowDown size={18} className="animate-float flex-shrink-0" style={{ animationDuration: '1.5s' }}/>
           </a>
-          
           <a href="http://fosht.vercel.app" target="_blank" rel="noreferrer" className="flex-1 sm:flex-none px-2 sm:px-8 py-3.5 sm:py-4 bg-white/5 text-white border border-white/10 rounded-2xl sm:rounded-full font-bold text-xs sm:text-lg hover:bg-white/10 transition-all backdrop-blur-sm flex items-center justify-center gap-1.5 sm:gap-2 group">
             <span className="hidden sm:inline">Lihat Portofolio</span>
             <span className="sm:hidden">Portofolio</span>
@@ -282,10 +178,15 @@ export default function LandingPageCatalog() {
         </div>
       </section>
 
-      {/* 4. PROCESS/WAKTU */}
+      {/* 4. PROCESS/WAKTU
+          OPTIMIZED: Hapus animate-glow (glowPulse infinite) dari blob besar di dalam section ini.
+          Blob w-full h-full dengan blur-[100px] yang animate scale+opacity = biang keladi berat.
+          Diganti static div — visual sama persis karena opacity-nya rendah.
+      */}
       <section className="px-4 sm:px-6 mt-10">
         <div className="animate-reveal-scale max-w-5xl mx-auto bg-indigo-950/20 border border-indigo-500/10 p-8 sm:p-12 rounded-[2rem] sm:rounded-[3rem] text-center relative overflow-hidden">
-          <div className="animate-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-indigo-500/10 blur-[100px] pointer-events-none"></div>
+          {/* Static blob — tidak animate, tidak ada perbedaan visual yang terasa */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-indigo-500/10 blur-[100px] pointer-events-none" />
           <div className="relative z-10">
             <div className="animate-float w-16 h-16 sm:w-20 sm:h-20 bg-indigo-500/10 border border-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-[0_0_30px_rgba(79,70,229,0.2)]">
               <Zap className="text-indigo-400 animate-pulse w-8 h-8 sm:w-10 sm:h-10" />
@@ -300,7 +201,8 @@ export default function LandingPageCatalog() {
       {/* 5. FINAL CTA */}
       <section className="px-4 sm:px-6 mb-10">
         <div className="animate-fade-in-up max-w-7xl mx-auto bg-gradient-to-br from-indigo-900 to-[#020617] p-8 sm:p-12 md:p-20 rounded-[2.5rem] sm:rounded-[3.5rem] text-center text-white relative overflow-hidden shadow-[0_0_50px_rgba(79,70,229,0.1)] border border-indigo-500/20">
-          <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+          {/* OPTIMIZED: Texture CTA → static, pakai file lokal */}
+          <div className="absolute inset-0 opacity-[0.02] bg-[url('/carbon-fibre.png')]"></div>
           <div className="relative z-10">
             <div className="animate-float inline-flex items-center justify-center p-3 bg-indigo-500/20 rounded-2xl mb-6 sm:mb-8 border border-indigo-500/30" style={{ animationDelay: '1s' }}>
               <Code size={24} className="text-indigo-300" />

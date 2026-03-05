@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import PageTransition from '@/components/shared/PageTransition';
 
-// --- Konfigurasi Animasi Framer Motion ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easeInOut } }
@@ -35,13 +34,10 @@ const scaleIn = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: easeInOut } }
 };
 
+// OPTIMIZED: willChange akan ditambahkan langsung di elemen yang menggunakan ini
 const floatAnimation = {
   y: [0, -10, 0],
-  transition: {
-    duration: 3,
-    repeat: Infinity,
-    ease: easeInOut
-  }
+  transition: { duration: 3, repeat: Infinity, ease: easeInOut }
 };
 
 export default function HowToOrderPage() {
@@ -83,8 +79,6 @@ export default function HowToOrderPage() {
     }
   ];
 
-  // Helper function to map color string to Tailwind classes safely
-  // Dipaksa untuk gaya mode gelap
   const getColorStyles = (color: string) => {
     switch(color) {
       case 'purple': return { bg: 'bg-purple-500/10', border: 'border-purple-500/20', glow: 'bg-purple-500/20' };
@@ -96,26 +90,25 @@ export default function HowToOrderPage() {
   };
 
   return (
-    // Background dipaksa gelap #020617
     <PageTransition className="flex flex-col gap-24 pb-24 relative z-10 overflow-hidden bg-[#020617] transition-colors duration-500">
       
       {/* 1. HERO SECTION */}
       <section className="px-4 sm:px-6 pt-24 md:pt-32 text-center max-w-5xl mx-auto relative">
-        <motion.div 
-          animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"
-        ></motion.div>
 
-        {/* Decorative Floating Elements */}
+        {/* OPTIMIZED: Blob hero → static, hapus animate scale/opacity infinite */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none" />
+
+        {/* Floating elements — diberi willChange */}
         <motion.div 
-          animate={floatAnimation} 
+          animate={floatAnimation}
+          style={{ willChange: 'transform' }}
           className="absolute top-20 left-10 md:left-20 text-indigo-500/50 hidden md:block"
         >
           <Sparkles size={32} />
         </motion.div>
         <motion.div 
-          animate={{ y: [0, 15, 0], transition: { duration: 4, repeat: Infinity, ease: "easeInOut" } }} 
+          animate={{ y: [0, 15, 0], transition: { duration: 4, repeat: Infinity, ease: easeInOut } }}
+          style={{ willChange: 'transform' }}
           className="absolute bottom-20 right-10 md:right-20 text-purple-500/50 hidden md:block"
         >
           <Code2 size={40} />
@@ -173,12 +166,12 @@ export default function HowToOrderPage() {
                       viewport={{ once: true }}
                       transition={{ duration: 1, delay: 0.5 }}
                       className="hidden md:block absolute left-[5.5rem] top-24 bottom-[-3rem] w-px bg-gradient-to-b from-white/10 to-transparent transition-colors"
-                    ></motion.div>
+                    />
                   )}
 
                   {/* Nomor Urut & Ikon */}
                   <div className="shrink-0 flex items-center justify-center relative">
-                    <div className={`absolute inset-0 ${styles.glow} blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                    <div className={`absolute inset-0 ${styles.glow} blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                     <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#0a0f24] border border-white/10 rounded-[2rem] flex flex-col items-center justify-center relative z-10 shadow-xl group-hover:border-indigo-500/50 group-hover:-translate-y-2 transition-all duration-300">
                       <span className="text-[10px] sm:text-xs font-bold text-slate-500 mb-1 transition-colors">STEP</span>
                       <span className="text-2xl sm:text-3xl font-black text-white transition-colors">{step.num}</span>
@@ -248,12 +241,8 @@ export default function HowToOrderPage() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto bg-gradient-to-br from-indigo-600/20 to-purple-900/20 p-10 sm:p-16 rounded-[3rem] text-center border border-indigo-500/30 relative overflow-hidden backdrop-blur-xl shadow-2xl transition-colors"
         >
-          {/* Tekstur/Pattern */}
-          <motion.div 
-            animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"
-          ></motion.div>
+          {/* OPTIMIZED: Hapus motion.div animate backgroundPosition — static saja */}
+          <div className="absolute inset-0 bg-[url('/cubes.png')] opacity-10 mix-blend-overlay" />
           
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-5xl font-black text-white mb-6 tracking-tight transition-colors">Siap Memulai Tahap Pertama?</h2>

@@ -14,7 +14,8 @@ export const LANDING_PAGE_PACKAGES = [
           "Integrasi WhatsApp",
           "Loading Super Cepat"
         ],
-        color: "indigo"
+        color: "indigo",
+        popular: false
       },
       {
         name: "UMKM Special",
@@ -48,7 +49,8 @@ export const LANDING_PAGE_PACKAGES = [
           "Lokasi Google Maps",
           "Optimasi SEO Lanjutan"
         ],
-        color: "blue"
+        color: "blue",
+        popular: false
       },
       {
         name: "Bisnis Special",

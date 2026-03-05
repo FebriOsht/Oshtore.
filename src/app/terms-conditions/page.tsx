@@ -3,9 +3,8 @@
 import React from 'react';
 import { motion, easeInOut } from 'framer-motion';
 import { Scale, AlertTriangle, FileWarning, ArrowRight, ShieldCheck, FileText } from 'lucide-react';
-import PageTransition from '@/components/shared/PageTransition'; // Path import telah diperbaiki
+import PageTransition from '@/components/shared/PageTransition';
 
-// --- Konfigurasi Animasi Framer Motion ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeInOut } }
@@ -19,13 +18,10 @@ const staggerContainer = {
   }
 };
 
+// OPTIMIZED: willChange ditambahkan di elemen yang memakai ini
 const floatAnimation = {
   y: [0, -15, 0],
-  transition: {
-    duration: 5,
-    repeat: Infinity,
-    ease: easeInOut
-  }
+  transition: { duration: 5, repeat: Infinity, ease: easeInOut }
 };
 
 export default function TermsAndConditionsPage() {
@@ -56,7 +52,7 @@ export default function TermsAndConditionsPage() {
     },
     {
       title: "4. Hak Kekayaan Intelektual (Source Code)",
-      content: "Setelah pembayaran dilunasi 100%, hak kepemilikan atas aplikasi/website (Source Code) beralih sepenuhnya kepada Klien. Namun, Oshtore berhak menggunakan desain antarmuka (UI) sebagai portofolio perusahaan kecuali terdapat kesepakatan Non-Disclosure Agreement (NDA) tertulis."
+      content: "Secara default, akses server, hosting, dan infrastruktur dipegang oleh Oshtore untuk menjaga stabilitas sistem. Jika Klien menginginkan penyerahan source code dan akses penuh, hal ini harus disepakati secara tertulis sebelum proyek dimulai. Setelah kesepakatan tersebut dan pelunasan lunas, source code diserahkan sepenuhnya dan menjadi hak milik Klien. Oshtore tetap berhak menggunakan tampilan UI sebagai portofolio kecuali ada NDA tertulis."
     },
     {
       title: "5. Garansi & Pemeliharaan (Maintenance)",
@@ -79,26 +75,25 @@ export default function TermsAndConditionsPage() {
   ];
 
   return (
-    // Background dipaksa gelap #020617
     <PageTransition className="flex flex-col pb-24 relative z-10 overflow-hidden bg-[#020617] transition-colors duration-500">
       
       {/* HEADER SECTION */}
       <section className="px-4 sm:px-6 pt-24 md:pt-32 pb-12 text-center max-w-4xl mx-auto relative">
-        <motion.div 
-          animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none"
-        ></motion.div>
 
-        {/* Decorative Floating Elements */}
+        {/* OPTIMIZED: Blob hero → static */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none" />
+
+        {/* Floating elements — diberi willChange */}
         <motion.div 
-          animate={floatAnimation} 
+          animate={floatAnimation}
+          style={{ willChange: 'transform' }}
           className="absolute top-10 left-0 md:-left-10 text-indigo-500/30 hidden md:block"
         >
           <FileText size={48} />
         </motion.div>
         <motion.div 
-          animate={{ y: [0, 20, 0], transition: { duration: 6, repeat: Infinity, ease: "easeInOut" } }} 
+          animate={{ y: [0, 20, 0], transition: { duration: 6, repeat: Infinity, ease: easeInOut } }}
+          style={{ willChange: 'transform' }}
           className="absolute bottom-10 right-0 md:-right-10 text-purple-500/30 hidden md:block"
         >
           <ShieldCheck size={56} />
@@ -132,7 +127,7 @@ export default function TermsAndConditionsPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="mb-10 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 sm:p-6 flex gap-4 items-start shadow-none transition-colors"
+            className="mb-10 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 sm:p-6 flex gap-4 items-start transition-colors"
           >
             <AlertTriangle className="text-amber-400 shrink-0 mt-1 transition-colors" size={24} />
             <div>
@@ -155,7 +150,7 @@ export default function TermsAndConditionsPage() {
                 key={index}
                 variants={fadeInUp}
                 whileHover={{ y: -5 }}
-                className="bg-white/[0.02] border border-white/5 p-6 sm:p-8 rounded-[2rem] hover:bg-white/[0.04] hover:shadow-none transition-all duration-300 group"
+                className="bg-white/[0.02] border border-white/5 p-6 sm:p-8 rounded-[2rem] hover:bg-white/[0.04] transition-all duration-300 group"
               >
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4 flex items-center gap-3 transition-colors">
                   <FileWarning className="text-indigo-500 hidden sm:block opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all" size={20} />
@@ -177,7 +172,7 @@ export default function TermsAndConditionsPage() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/20 p-8 sm:p-12 rounded-[3rem] text-center flex flex-col items-center shadow-none transition-colors"
+          className="max-w-4xl mx-auto bg-gradient-to-br from-indigo-900/40 to-slate-900 border border-indigo-500/20 p-8 sm:p-12 rounded-[3rem] text-center flex flex-col items-center transition-colors"
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 transition-colors">Masih ada pertanyaan terkait kontrak kerja?</h2>
           <p className="text-slate-400 text-sm sm:text-base mb-8 max-w-xl transition-colors">

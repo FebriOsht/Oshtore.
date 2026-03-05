@@ -14,7 +14,6 @@ import {
   MapPin,
   Sparkles
 } from 'lucide-react';
-// Path import PageTransition diperbaiki
 import PageTransition from '@/components/shared/PageTransition'; 
 
 // --- Konfigurasi Animasi Framer Motion ---
@@ -36,6 +35,7 @@ const scaleIn = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: easeInOut } }
 };
 
+// OPTIMIZED: floatAnimation tetap sama, tapi akan diberi willChange di elemen pemakainya
 const floatAnimation = {
   y: [0, -15, 0],
   transition: {
@@ -49,26 +49,26 @@ export default function AboutPage() {
   const [imgError, setImgError] = useState(false);
 
   return (
-    // Background dipaksa gelap #020617
     <PageTransition className="flex flex-col gap-24 pb-24 relative z-10 overflow-hidden bg-[#020617]">
       
       {/* 1. HERO SECTION */}
       <section className="px-4 sm:px-6 pt-24 md:pt-32 text-center max-w-5xl mx-auto relative">
-        <motion.div 
-          animate={{ scale: [1, 1.05, 1], opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"
-        ></motion.div>
+        
+        {/* OPTIMIZED: Ambient blob hero — static, tidak animate scale/opacity
+            Visually nyaris tidak kelihatan bedanya tapi menghemat GPU secara signifikan */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Decorative Floating Elements */}
+        {/* Decorative Floating Elements — diberi willChange agar GPU layer siap */}
         <motion.div 
-          animate={floatAnimation} 
+          animate={floatAnimation}
+          style={{ willChange: 'transform' }}
           className="absolute top-10 left-10 md:left-20 text-indigo-500/50 hidden md:block"
         >
           <Sparkles size={36} />
         </motion.div>
         <motion.div 
-          animate={{ y: [0, 20, 0], transition: { duration: 5, repeat: Infinity, ease: "easeInOut" } }} 
+          animate={{ y: [0, 20, 0], transition: { duration: 5, repeat: Infinity, ease: easeInOut } }}
+          style={{ willChange: 'transform' }}
           className="absolute bottom-10 right-10 md:right-20 text-purple-500/50 hidden md:block"
         >
           <Code2 size={48} />
@@ -204,17 +204,13 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="max-w-5xl mx-auto bg-[#0a0f24]/50 border border-white/10 p-8 sm:p-12 md:p-16 rounded-[3rem] backdrop-blur-2xl relative overflow-hidden flex flex-col md:flex-row items-center gap-10 md:gap-16 transition-colors"
         >
-          {/* Efek Cahaya */}
-          <motion.div 
-            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-32 -right-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none"
-          ></motion.div>
+          {/* OPTIMIZED: Efek cahaya founder card — static, tidak animate scale/opacity
+              Perbedaan visual tidak terasa tapi penghematan GPU nyata */}
+          <div className="absolute -top-32 -right-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="w-40 h-40 sm:w-48 sm:h-48 shrink-0 relative group cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] rotate-6 opacity-50 blur-lg group-hover:rotate-12 transition-transform duration-500"></div>
             <div className="relative w-full h-full bg-[#020617] border border-white/10 rounded-[2rem] flex items-center justify-center overflow-hidden z-10 shadow-xl transition-colors">
-              {/* Gambar Profil Founder dengan Error Handling React */}
               {!imgError ? (
                 <img 
                   src="/img/febriosht.jpeg" 
@@ -264,12 +260,9 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto bg-gradient-to-br from-indigo-600/20 to-purple-900/20 p-10 sm:p-16 rounded-[3rem] text-center border border-indigo-500/30 relative overflow-hidden backdrop-blur-xl transition-colors"
         >
-          {/* Tekstur/Pattern */}
-          <motion.div 
-            animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"
-          ></motion.div>
+          {/* OPTIMIZED: Texture CTA — static div, hapus motion.div dengan animate backgroundPosition
+              CSS background-position infinite animation sangat boros karena trigger repaint tiap frame */}
+          <div className="absolute inset-0 bg-[url('/cubes.png')] opacity-10 mix-blend-overlay" />
           
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-5xl font-black text-white mb-6 tracking-tight transition-colors">Mari Bangun Sesuatu <br/> yang Hebat Bersama.</h2>
